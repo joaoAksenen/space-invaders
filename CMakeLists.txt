@@ -8,7 +8,12 @@ set(EXECUTABLE_NAME "spaceinvaders")
 
 # ::: SOURCES :::
 set(SOURCES "src/main.c")
+
+list(APPEND SOURCES 
+    "src/engine/engine.c")
+
 list(APPEND SOURCES "deps/glad/src/glad.c")
+
 
 # ::: INCLUDES :::
 set(INCLUDE_PATHS 
