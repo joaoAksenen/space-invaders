@@ -10,7 +10,9 @@ set(EXECUTABLE_NAME "spaceinvaders")
 set(SOURCES "src/main.c")
 
 list(APPEND SOURCES 
-    "src/engine/engine.c")
+    "src/engine/engine.c"
+    "src/engine/util/dynamicarray.c"
+)
 
 list(APPEND SOURCES "deps/glad/src/glad.c")
 
