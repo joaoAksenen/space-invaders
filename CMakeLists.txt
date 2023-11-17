@@ -12,6 +12,7 @@ set(SOURCES "src/main.c")
 list(APPEND SOURCES 
     "src/engine/engine.c"
     "src/engine/util/dynamic-array.c"
+    "src/engine/scene/scene.c"
 )
 
 list(APPEND SOURCES "deps/glad/src/glad.c")

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "dynamicarray.h"
+#include "dynamic-array.h"
 #include "types.h"
 #include "error.h"
 
