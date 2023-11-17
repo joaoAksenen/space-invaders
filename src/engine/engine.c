@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "scene/scene-manager.h"
+#include "time/time-internal.h"
 #include "util/error.h"
 #include "engine.h"
 
@@ -35,6 +36,7 @@ bool engineInit(const char* windowTitle) {
     glViewport(0, 0, 640, 480);
     glClearColor(0.169f, 0.114f, 0.169f, 1);
 
+    _timeInit(60);
     _sceneManagerInit();
     engine->sceneManager = _sceneManagerGet();
     engine->mainloopRunning = false;
@@ -58,7 +60,7 @@ void engineMainloop() {
     while(!glfwWindowShouldClose(engine->window)) {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        sm->currentScene->onUpdate(0); 
+        sm->currentScene->onUpdate(_timeUpdate());
 
         glfwSwapBuffers(engine->window);
         glfwPollEvents();    

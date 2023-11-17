@@ -1,24 +1,18 @@
 #include "engine/engine.h"
 #include <stdio.h>
 
+f32 lastTime;
 void onInit() {
     printf("onInit\n");
+    printf("initial time: %f\n", engineTimeGetTime());
 }
 
-int i = 0;
 void onUpdate(f32 delta) {
-    printf("onUpdate (1): %f\n", delta);
-    if (++i >= 3) {
-        puts("Changing to scene 2");
-        engineSceneChange("scene 2");
-    }
-}
+    lastTime += delta;
 
-int j = 0;
-void onUpdate2(f32 delta) {
-    printf("onUpdate (2): %f\n", delta);
-    if (++j >= 3) {
-        engineTerminate();
+    if (lastTime >= 1) {
+        printf("current time after one sec: %f\n", engineTimeGetTime());
+        lastTime = 0;
     }
 }
 
@@ -31,10 +25,6 @@ int main() {
     if (!init) return -1;
 
     engineSceneCreate("scene 1", onUpdate, onInit, onEnd);
-    engineSceneCreate("scene 2", onUpdate2, onInit, onEnd);
-
-    engineSceneChange("scene 2");
-    engineSceneChange("scene 1");
 
     engineMainloop();
     engineTerminate();

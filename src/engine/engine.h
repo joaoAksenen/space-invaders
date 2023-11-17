@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "scene/scene-manager.h"
+#include "time/time.h"
 #include "util/types.h"
 
 
