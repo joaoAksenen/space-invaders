@@ -37,6 +37,9 @@ set(SUBDIRECTORIES
 # ::: LIBRARIES :::
 set(LIBRARIES "glfw" "cglm")
 
+# ::: ASSETS :::
+set(ASSETS_DIR "res")
+
 # ::: CONFIG :::
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -69,3 +72,11 @@ endforeach(SUBDIR ${SUBDIRECTORIES})
 foreach(LIB ${LIBRARIES})
     target_link_libraries(${EXECUTABLE_NAME} ${LIB})
 endforeach(LIB ${LIBRARIES})
+
+# Copy assets during each build
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory  "${CMAKE_SOURCE_DIR}/${ASSETS_DIR}" "${CMAKE_BINARY_DIR}/${ASSETS_DIR}"
+    COMMENT "Copying assets to build directory"
+)
+
+add_dependencies(${EXECUTABLE_NAME} copy_assets)
