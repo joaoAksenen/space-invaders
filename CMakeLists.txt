@@ -38,7 +38,7 @@ set(SUBDIRECTORIES
 set(LIBRARIES "glfw" "cglm")
 
 # ::: ASSETS :::
-set(ASSETS_DIR "res")
+set(ASSETS_DIR "assets")
 
 # ::: CONFIG :::
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
