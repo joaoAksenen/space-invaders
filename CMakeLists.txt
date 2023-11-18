@@ -15,6 +15,7 @@ list(APPEND SOURCES
     "src/engine/scene/scene.c"
     "src/engine/time/time.c"
     "src/engine/util/dynamic-array.c"
+    "src/engine/util/file.c"
 )
 
 list(APPEND SOURCES "deps/glad/src/glad.c")

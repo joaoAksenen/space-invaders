@@ -3,6 +3,7 @@
 #include "renderer-internal.h"
 #include "renderer.h"
 #include "../util/error.h"
+#include "../util/file.h"
 
 
 u32 quadVAO;
@@ -10,18 +11,6 @@ u32 quadVBO;
 u32 quadEBO;
 
 u32 shaderProgram;
-
-const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec2 aPos;\n"
-    "void main() {\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
-    "}\0";
-
-const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main() {\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\0"; 
 
 void _rendererInit(size_t width, size_t height) {
     glViewport(0, 0, width, height);
@@ -66,11 +55,17 @@ void engineRendererDrawQuad(f32 x, f32 y, f32 w, f32 h) {
 }
 
 void _rendererInitShader() {
+    File vertexShaderSource = engineFileRead("res/shaders/vertex.glsl");
+    if (!vertexShaderSource.isValid) ERROR_EXIT("Failed to read vertex shader file");
+
+    File fragmentShaderSource = engineFileRead("res/shaders/fragment.glsl");
+    if (!fragmentShaderSource.isValid) ERROR_EXIT("Failed to read fragment shader file");
+
     int success;
     char infoLog[512];
 
     u32 vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glShaderSource(vertexShader, 1, (const char* const*)&vertexShaderSource.data, NULL);
     glCompileShader(vertexShader);
 
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
@@ -80,7 +75,7 @@ void _rendererInitShader() {
     }
 
     u32 fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glShaderSource(fragmentShader, 1, (const char* const*)&fragmentShaderSource.data, NULL);
     glCompileShader(fragmentShader);
 
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
