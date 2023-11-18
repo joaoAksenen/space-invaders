@@ -3,12 +3,16 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "renderer/renderer-internal.h"
 #include "scene/scene-manager.h"
 #include "time/time-internal.h"
 #include "util/error.h"
 #include "engine.h"
 
 Engine* engine;
+
+#define WINDOW_WIDTH 640
+#define WINDOW_HEIGHT 480
 
 bool engineInit(const char* windowTitle) {
     if (!glfwInit()) ERROR_RETURN(false, "Unable to initialize glfw\n");
@@ -22,7 +26,7 @@ bool engineInit(const char* windowTitle) {
 
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     
-    engine->window = glfwCreateWindow(640, 480, windowTitle, NULL, NULL);
+    engine->window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, windowTitle, NULL, NULL);
     if (!engine->window) {
         glfwTerminate();
         ERROR_RETURN(false, "Unable to create window\n");
@@ -33,10 +37,12 @@ bool engineInit(const char* windowTitle) {
         ERROR_RETURN(false, "Unable to initialize glad (opengl)\n");
     }
 
-    glViewport(0, 0, 640, 480);
-    glClearColor(0.169f, 0.114f, 0.169f, 1);
 
     _timeInit(60);
+    _rendererInit(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    glClearColor(0.169f, 0.114f, 0.169f, 1);
+
     _sceneManagerInit();
     engine->sceneManager = _sceneManagerGet();
     engine->mainloopRunning = false;
