@@ -5,15 +5,30 @@
 #include "../util/error.h"
 #include "../util/file.h"
 
+#include "../engine.h"
 
-u32 quadVAO;
-u32 quadVBO;
-u32 quadEBO;
 
-u32 shaderProgram;
+static u32 quadVAO;
+static u32 quadVBO;
+static u32 quadEBO;
+
+static u32 shaderProgram;
+
+static int viewportWidth;
+static int viewportHeight;
+static f32 viewportAspect;
+
+extern Engine *engine;
+
 
 void _rendererInit(size_t width, size_t height) {
+    glEnable(GL_SCISSOR_TEST);
     glViewport(0, 0, width, height);
+
+    glfwGetWindowSize(engine->window, &viewportWidth, &viewportHeight);
+    viewportAspect = (float)viewportWidth / viewportHeight;
+
+    _rendererUpdateViewport(width, height);
 
     _rendererInitShader();
     _rendererInitQuad();
@@ -99,4 +114,25 @@ void _rendererInitShader() {
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+}
+
+
+
+void _rendererUpdateViewport(u32 width, u32 height) {
+    f32 newWidth = width, newHeight = height;
+    f32 left=0, top=0;
+
+    f32 aspect = (float)width/height;
+
+    if (aspect >= viewportAspect) {
+        newWidth = height * viewportAspect;
+        left = (width - newWidth) / 2;
+    } else {
+        aspect = (float)viewportHeight/viewportWidth;
+        newHeight = width * aspect;
+        top = (height - newHeight) / 2;
+    }
+
+    glScissor(left, top, newWidth, newHeight);
+    glViewport(left, top, newWidth, newHeight);
 }

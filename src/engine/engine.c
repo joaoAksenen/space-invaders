@@ -14,6 +14,9 @@ Engine* engine;
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
+
+static void windowSizeCallback(GLFWwindow* window, int width, int height);
+
 bool engineInit(const char* windowTitle) {
     if (!glfwInit()) ERROR_RETURN(false, "Unable to initialize glfw\n");
 
@@ -24,8 +27,6 @@ bool engineInit(const char* windowTitle) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    
     engine->window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, windowTitle, NULL, NULL);
     if (!engine->window) {
         glfwTerminate();
@@ -37,9 +38,10 @@ bool engineInit(const char* windowTitle) {
         ERROR_RETURN(false, "Unable to initialize glad (opengl)\n");
     }
 
+    _rendererInit(WINDOW_WIDTH, WINDOW_HEIGHT);
+    glfwSetWindowSizeCallback(engine->window, windowSizeCallback);
 
     _timeInit(60);
-    _rendererInit(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     glClearColor(0.169f, 0.114f, 0.169f, 1);
 
@@ -87,4 +89,8 @@ void engineTerminate() {
     free(engine);
 
     glfwTerminate();
+}
+
+static void windowSizeCallback(GLFWwindow* window, int width, int height) {
+    _rendererUpdateViewport(width, height);
 }
