@@ -1,4 +1,5 @@
 #include <glad/glad.h>
+#include <cglm/cglm.h>
 
 #include "renderer-internal.h"
 #include "renderer.h"
@@ -31,6 +32,8 @@ void _rendererInit(size_t width, size_t height) {
     _rendererUpdateViewport(width, height);
 
     _rendererInitShader();
+    _rendererInitMatrices(width, height);
+
     _rendererInitQuad();
 }
 
@@ -65,15 +68,24 @@ void _rendererInitQuad() {
 
 void engineRendererDrawQuad(f32 x, f32 y, f32 w, f32 h) {
     glUseProgram(shaderProgram);
+
+    mat4 model;
+    glm_mat4_identity(model);
+
+    glm_translate_make(model, (vec3){x, y, 0});
+    glm_scale(model, (vec3){w, h, 1});
+
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, &model[0][0]);
+
     glBindVertexArray(quadVAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 void _rendererInitShader() {
-    File vertexShaderSource = engineFileRead("res/shaders/vertex.glsl");
+    File vertexShaderSource = engineFileRead("assets/shaders/vertex.glsl");
     if (!vertexShaderSource.isValid) ERROR_EXIT("Failed to read vertex shader file");
 
-    File fragmentShaderSource = engineFileRead("res/shaders/fragment.glsl");
+    File fragmentShaderSource = engineFileRead("assets/shaders/fragment.glsl");
     if (!fragmentShaderSource.isValid) ERROR_EXIT("Failed to read fragment shader file");
 
     int success;
@@ -116,6 +128,18 @@ void _rendererInitShader() {
     glDeleteShader(fragmentShader);
 }
 
+void _rendererInitMatrices(u32 width, u32 height) {
+    glUseProgram(shaderProgram);
+
+    mat4 proj;
+    glm_mat4_identity(proj);
+    glm_ortho(0, width, 0, height, -2, 2, proj);
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, &proj[0][0]);
+
+    mat4 view;
+    glm_mat4_identity(view);
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, &view[0][0]);
+}
 
 
 void _rendererUpdateViewport(u32 width, u32 height) {

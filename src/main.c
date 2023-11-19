@@ -1,7 +1,14 @@
 #include "engine/engine.h"
 
+f32 x = -50;
 void onUpdate(f32 delta) {
-    engineRendererDrawQuad(100, 100, 100, 100);
+    engineRendererDrawQuad(x, 240, 100, 100);
+
+    x += delta * 100;
+
+    if (x > 690) {
+        x = -50;
+    } 
 }
 
 int main() {
