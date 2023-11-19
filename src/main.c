@@ -1,4 +1,5 @@
 #include "engine/engine.h"
+#include "stb_image.h"
 
 f32 x = -50;
 void onUpdate(f32 delta) {

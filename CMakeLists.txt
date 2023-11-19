@@ -26,6 +26,7 @@ set(INCLUDE_PATHS
     "deps/glfw/include"
     "deps/glad/include"
     "deps/cglm/include"
+    "deps/stb"
 )
 
 # ::: SUBDIRECTORIES :::
